@@ -21,7 +21,7 @@ app.listen(PORT, function () {
   console.log('Our app is running' + PORT);
 });
 
-const connectionString = '    postgres://olcwkvkmlzfsww:9c5b20d95c405bdd70f10fad17c771f61d8f9c483253a905c1908a63868db7bf@ec2-54-235-192-146.compute-1.amazonaws.com:5432/d7pka63of3dtn0'
+const connectionString = '        postgres://xatbsbvsgcqzxb:ea28bdb8f38f801aa2a05c10bf0cef48a7d9962f09068847e70c8ae47b2dd0a6@ec2-52-2-82-109.compute-1.amazonaws.com:5432/dafmu2fnj3a81n'
 const pool = new Pool({
   connectionString: connectionString,
   ssl: true
@@ -92,6 +92,24 @@ cron.schedule('*/30 * * * *', function () {
   //   .catch(e => console.error(e.stack ))
 
 })
+
+pp.post("/addItem", (req, res) => {
+  console.log("adding item....")
+  const nowDate = new Date();//.toISOString();
+  const itemName = req.body.itemName;
+  const itemWarrantyExpiryDate = req.body.itemWarrantyExpiryDate;
+  const oneSignalID = req.body.oneSignalId;
+  const insertQuery = {
+    text: 'INSERT INTO item_info(itemName, itemWarrantyExpiryDate, onesignalid,createdDate) VALUES ($1,$2,$3,$4)',
+    values: [itemName, itemWarrantyExpiryDate, oneSignalID,nowDate]
+  }
+  client.query(insertQuery)
+  .then(res => {
+    return res
+  }
+  )
+  .catch(e => console.error(e.stack))
+});
 
 
 
