@@ -6,10 +6,7 @@ const { Pool, Client } = require('pg');
 const { now } = require("moment");
 const OneSignal = require('onesignal-node');
 const { response } = require("express");
-const trackingMore_base_url = "https://api.trackingmore.com/v2"
-const trackingMore_api_key = "546ad7b2-dfd8-48e0-82d5-f65cda38fc49"
 const app = express();
-require('./trackingmore.js');
 const https = require('https');
 var bodyParser = require('body-parser');
 var jsonParser = bodyParser.json()
