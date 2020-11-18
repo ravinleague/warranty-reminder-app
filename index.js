@@ -11,7 +11,7 @@ const https = require('https');
 var bodyParser = require('body-parser');
 var jsonParser = bodyParser.json()
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 5005;
 const oneSignalAppID = "bbd07d25-66d8-49f4-b8f1-e73d92e822ab";
 const oneSignalApiKey = "MjZkYWM2YmUtY2JiOS00ZmQ1LTg1NTAtMWRiNmQ2ZGQwNTJm";
 const oneSignalClient = new OneSignal.Client(oneSignalAppID, oneSignalApiKey);
@@ -21,7 +21,7 @@ app.listen(PORT, function () {
   console.log('Our app is running' + PORT);
 });
 
-const connectionString = '        postgres://xatbsbvsgcqzxb:ea28bdb8f38f801aa2a05c10bf0cef48a7d9962f09068847e70c8ae47b2dd0a6@ec2-52-2-82-109.compute-1.amazonaws.com:5432/dafmu2fnj3a81n'
+const connectionString = 'postgres://xatbsbvsgcqzxb:ea28bdb8f38f801aa2a05c10bf0cef48a7d9962f09068847e70c8ae47b2dd0a6@ec2-52-2-82-109.compute-1.amazonaws.com:5432/dafmu2fnj3a81n'
 const pool = new Pool({
   connectionString: connectionString,
   ssl: true
@@ -36,7 +36,7 @@ client.connect(err => {
   if (err) {
     console.error('error connecting', err.stack)
   } else {
-    console.log('connected');
+    console.log('database connected');
   }
 });
 
@@ -93,7 +93,7 @@ cron.schedule('*/30 * * * *', function () {
 
 })
 
-pp.post("/addItem", (req, res) => {
+app.post("/addItem", (req, res) => {
   console.log("adding item....")
   const nowDate = new Date();//.toISOString();
   const itemName = req.body.itemName;
@@ -110,6 +110,19 @@ pp.post("/addItem", (req, res) => {
   )
   .catch(e => console.error(e.stack))
 });
+
+app.post("/deleteItem", (req, res) => {
+  const itemName = req.body.itemName;
+  const itemWarrantyExpiryDate = req.body.itemWarrantyExpiryDate;
+  const deleteQuery = `DELETE FROM item_info
+  WHERE itemName = '${itemName}' AND itemWarrantyExpiryDate = '${itemWarrantyExpiryDate}'
+  RETURNING *`
+  client
+  .query(deleteQuery)
+  .then(res => console.log(res.rowCount))
+  .catch(e => console.error(e.stack))
+})
+
 
 
 
