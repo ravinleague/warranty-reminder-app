@@ -42,54 +42,37 @@ client.connect(err => {
 
 
 
-cron.schedule('*/30 * * * *', function () {
-  // console.log('cron ran!')
-  // //query database
-  // client
-  //   .query(`SELECT * from deliveryitem WHERE status NOT ILIKE '%delivered%' AND onesignalid NOT ILIKE 'demo'`)
-  //   .then(res => {
-  //     let rows = res.rows
-  //     rows.forEach(row => {
-  //       console.log(row.trackingnumber);
-  //       const lastStatus = row.status;
-  //       const trackingNumber = row.trackingnumber;
-  //       const carrier = row.carriercode;
-  //       const onesignalid = row.onesignalid;
-  //       var postData = null;
-  //       sentRes(`${trackingMore_base_url}/trackings/${carrier}/${trackingNumber}`, postData, "GET", function (data) {
-  //         const res = JSON.parse(data).data;
-  //         const status = res.status.toLowerCase();
-  //         var oneSignalStatus = "";
-  //         if(status == "delivered"){
-  //             oneSignalStatus = "Your parcel has been delivered.";
-  //         }else if(status == "transit"){
-  //           oneSignalStatus = "Your parcel is in transit"
-  //         }else if (status == "1 item has been delivered."){
-  //           oneSignalStatus = "Your parcel has been delivered.";
-  //         }else{
-  //           oneSignalStatus = status;
-  //         }
-  //         if (status != null && status.toLowerCase() != lastStatus.toLowerCase()) {
-  //           client.query(`UPDATE deliveryitem SET status = '${status}' WHERE trackingnumber = '${trackingNumber}'`)
-  //             .then(res => {
-  //               oneSignalClient.createNotification(
-  //                 {
-  //                   contents: { "en": `${oneSignalStatus}` },
-  //                   headings: { "en": "DELIVERY STATUS UPDATE" },
-  //                   include_player_ids: [onesignalid]
-  //                 }).then(() => {
+cron.schedule('* * * * *', function () {
+  client
+    .query(`SELECT * from item_info`)
+    .then(res => {
+      let rows = res.rows
+      rows.forEach(row => {
+        const date1 = new Date()
+        const date2 = row.itemWarrantyExpiryDate;
+        const itemName = row.itemName;
+        const notificationDays = row.notificationDays;
+        const onesignalid = row.onesignalid;
+        var difference_In_Days = (date1 - date2) / (1000 * 3600 * 24);
+        console.log(difference_In_Days);
+        if(difference_In_Days == notificationDays){
+          oneSignalClient.createNotification(
+            {
+              contents: { "en": `${itemName} warranty expiring soon` },
+              headings: { "en": "Item Warranty Update" },
+              include_player_ids: [onesignalid]
+            }).then(() => {
 
-  //                 }).catch((err) => {
-  //                   throw err;
-  //                 })
-  //             }).catch((err) => {
-  //               throw err;
-  //             });
-  //         }
-  //       });
-  //     });
-  //   })
-  //   .catch(e => console.error(e.stack ))
+            }).catch((err) => {
+              throw err;
+            })
+        }
+        
+        var postData = null;
+        
+      });
+    })
+    .catch(e => console.error(e.stack ))
 
 })
 
@@ -99,9 +82,10 @@ app.post("/addItem", (req, res) => {
   const itemName = req.body.itemName;
   const itemWarrantyExpiryDate = req.body.itemWarrantyExpiryDate;
   const oneSignalID = req.body.oneSignalId;
+  const notificationDays = req.body.notificationDays;
   const insertQuery = {
-    text: 'INSERT INTO item_info(itemName, itemWarrantyExpiryDate, onesignalid,createdDate) VALUES ($1,$2,$3,$4)',
-    values: [itemName, itemWarrantyExpiryDate, oneSignalID,nowDate]
+    text: 'INSERT INTO item_info(itemName, itemWarrantyExpiryDate, onesignalid,createdDate,notificationDays) VALUES ($1,$2,$3,$4,$5)',
+    values: [itemName, itemWarrantyExpiryDate, oneSignalID,nowDate,notificationDays]
   }
   client.query(insertQuery)
   .then(res => {
