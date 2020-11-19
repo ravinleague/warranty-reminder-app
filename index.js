@@ -8,6 +8,7 @@ const OneSignal = require('onesignal-node');
 const { response } = require("express");
 const app = express();
 const https = require('https');
+const moment = require('moment');
 var bodyParser = require('body-parser');
 var jsonParser = bodyParser.json()
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
@@ -48,14 +49,15 @@ cron.schedule('* * * * *', function () {
     .then(res => {
       let rows = res.rows
       rows.forEach(row => {
-        const date1 = new Date()
-        const date2 = row.itemWarrantyExpiryDate;
+        console.log(row);
+        var date1 = moment(new Date());
+        var date2 = moment(row.itemwarrantyexpirydate);
+        var diffInDays = date2.diff(date1,'days');
         const itemName = row.itemName;
-        const notificationDays = row.notificationDays;
+        const notificationDays = row.notificationdays;
         const onesignalid = row.onesignalid;
-        var difference_In_Days = (date1 - date2) / (1000 * 3600 * 24);
-        console.log(difference_In_Days);
-        if(difference_In_Days == notificationDays){
+        console.log(diffInDays + "--" + notificationDays);
+        if(diffInDays == notificationDays){
           oneSignalClient.createNotification(
             {
               contents: { "en": `${itemName} warranty expiring soon` },
