@@ -60,7 +60,7 @@ cron.schedule('* * * * *', function () {
         if(diffInDays <= notificationDays){
           oneSignalClient.createNotification(
             {
-              contents: { "en": `${itemName} warranty expires ${moment(date2).format('ddd, MMM yyyy')}` },
+              contents: { "en": `${itemName} warranty expires ${moment(date2).format('ll')}` },
               headings: { "en": `${itemName} warranty update`},
               include_player_ids: [onesignalid]
             }).then(() => {
