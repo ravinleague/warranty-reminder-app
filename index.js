@@ -53,15 +53,15 @@ cron.schedule('* * * * *', function () {
         var date1 = moment(new Date());
         var date2 = moment(row.itemwarrantyexpirydate);
         var diffInDays = date2.diff(date1,'days');
-        const itemName = row.itemName;
+        const itemName = row.itemname;
         const notificationDays = row.notificationdays;
         const onesignalid = row.onesignalid;
         console.log(diffInDays + "--" + notificationDays);
         if(diffInDays <= notificationDays){
           oneSignalClient.createNotification(
             {
-              contents: { "en": `${itemName} warranty expiring soon` },
-              headings: { "en": "Item Warranty Update" },
+              contents: { "en": `${itemName} warranty expires ${moment(date2).format('ddd, MMM yyyy')}` },
+              headings: { "en": `${itemName} warranty update`},
               include_player_ids: [onesignalid]
             }).then(() => {
 
