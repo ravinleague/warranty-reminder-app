@@ -57,7 +57,7 @@ cron.schedule('* * * * *', function () {
         const notificationDays = row.notificationdays;
         const onesignalid = row.onesignalid;
         console.log(diffInDays + "--" + notificationDays);
-        if(diffInDays <= notificationDays){
+        if(diffInDays <= notificationDays && notificationDays > -1){
           oneSignalClient.createNotification(
             {
               contents: { "en": `${itemName} warranty expires ${moment(date2).format('ll')}` },
@@ -77,6 +77,22 @@ cron.schedule('* * * * *', function () {
     .catch(e => console.error(e.stack ))
 
 })
+
+app.post("/muteNotificationsForItem", (req, res) => {
+  console.log("adding item....")
+  const nowDate = new Date();//.toISOString();
+  const itemName = req.body.itemName;
+  const itemWarrantyExpiryDate = req.body.itemWarrantyExpiryDate;
+  const oneSignalID = req.body.oneSignalId;
+  const notificationDays = req.body.notificationDays;
+  
+  client.query(`UPDATE item_info SET notificationdays = -1 WHERE itemname = '${itemName}' AND oneSignalID = ${oneSignalID}`)
+  .then(res => {
+    return res
+  }
+  )
+  .catch(e => console.error(e.stack))
+});
 
 app.post("/addItem", (req, res) => {
   console.log("adding item....")
