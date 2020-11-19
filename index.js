@@ -57,7 +57,7 @@ cron.schedule('* * * * *', function () {
         const notificationDays = row.notificationdays;
         const onesignalid = row.onesignalid;
         console.log(diffInDays + "--" + notificationDays);
-        if(diffInDays == notificationDays){
+        if(diffInDays <= notificationDays){
           oneSignalClient.createNotification(
             {
               contents: { "en": `${itemName} warranty expiring soon` },
