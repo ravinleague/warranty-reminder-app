@@ -86,7 +86,7 @@ app.post("/muteNotificationsForItem", (req, res) => {
   const oneSignalID = req.body.oneSignalId;
   const notificationDays = req.body.notificationDays;
   
-  client.query(`UPDATE item_info SET notificationdays = -1 WHERE itemname = '${itemName}' AND oneSignalID = ${oneSignalID}`)
+  client.query(`UPDATE item_info SET notificationdays = -1 WHERE itemname = '${itemName}' AND oneSignalID = '${oneSignalID}'`)
   .then(res => {
     return res
   }
