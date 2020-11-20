@@ -115,10 +115,7 @@ app.post("/addItem", (req, res) => {
 
 app.post("/deleteItem", (req, res) => {
   const itemName = req.body.itemName;
-  const itemWarrantyExpiryDate = req.body.itemWarrantyExpiryDate;
-  const deleteQuery = `DELETE FROM item_info
-  WHERE itemName = '${itemName}' AND itemWarrantyExpiryDate = '${itemWarrantyExpiryDate}'
-  RETURNING *`
+  const deleteQuery = `DELETE FROM item_info WHERE itemName = '${itemName}' RETURNING *`
   client
   .query(deleteQuery)
   .then(res => console.log(res.rowCount))
