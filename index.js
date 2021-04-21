@@ -43,7 +43,7 @@ client.connect(err => {
 
 
 
-cron.schedule('* 7 * * *', function () {
+cron.schedule('* * * * *', function () {
   client
     .query(`SELECT * from item_info`)
     .then(res => {
@@ -60,7 +60,7 @@ cron.schedule('* 7 * * *', function () {
         if(diffInDays > 0 && diffInDays <= notificationDays && notificationDays > -1){
           oneSignalClient.createNotification(
             {
-              contents: { "en": `${itemName} warranty expires ${moment(date2).format('ll')}` },
+              contents: { "en": `${itemName} warranty expires ${moment(date2).format('ll')}. We will send you another reminder tomorrow at 07:00 AM` },
               headings: { "en": `${itemName} warranty update`},
               include_player_ids: [onesignalid]
             }).then(() => {
