@@ -43,7 +43,7 @@ client.connect(err => {
 
 
 
-cron.schedule('* 7 * * *', function () {
+cron.schedule('* * * * *', function () {
   client
     .query(`SELECT * from item_info`)
     .then(res => {
