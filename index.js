@@ -13,7 +13,7 @@ var bodyParser = require('body-parser');
 var jsonParser = bodyParser.json()
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
 const PORT = process.env.PORT || 5005;
-const oneSignalAppID = "bbd07d25-66d8-49f4-b8f1-e73d92e822ab";
+const oneSignalAppID = "0c37ccc1-e4b3-4d25-9b9e-38f6dfee2bfc";
 const oneSignalApiKey = "MjZkYWM2YmUtY2JiOS00ZmQ1LTg1NTAtMWRiNmQ2ZGQwNTJm";
 const oneSignalClient = new OneSignal.Client(oneSignalAppID, oneSignalApiKey);
 
