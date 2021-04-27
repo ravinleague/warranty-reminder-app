@@ -45,7 +45,7 @@ client.connect(err => {
 
 cron.schedule('0 7 * * 1-7', function () {
   client
-    .query(`SELECT * from item_info`)
+    .query(`select * from item_info where itemwarrantyexpirydate > TIMESTAMP 'yesterday' and notificationdays != -1`)
     .then(res => {
       let rows = res.rows
       rows.forEach(row => {
